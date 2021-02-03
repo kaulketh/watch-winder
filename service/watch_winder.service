@@ -1,0 +1,10 @@
+[Unit]
+ Description=Watch winder service
+ After=multi-user.target
+
+ [Service]
+ Type=idle
+ ExecStart=/usr/bin/python3 /home/pi/watch_winder/ww.py
+
+ [Install]
+ WantedBy=multi-user.target
