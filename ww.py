@@ -66,7 +66,7 @@ if __name__ == '__main__':
         try:
             if 8 <= current_hour() <= 22:
                 # insert function here
-                angle_mode(sleep_time=3)
+                angle_mode(turns=3, sleep_time=2)
 
                 count = 1
             else:
