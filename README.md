@@ -1,1 +1,1 @@
-# simple stepper motor control, 28BYJ-48 with ULN2003A
+### simple stepper motor control, 28BYJ-48 with ULN2003A
