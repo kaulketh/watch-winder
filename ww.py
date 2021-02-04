@@ -51,7 +51,7 @@ def step_mode(sleep_time=1.5):
 def wait_for_next_turn(wait_period=WAIT_PERIOD_RANGE):
     wait = random.randint(wait_period[0], wait_period[1])
     MOTOR.logger.info(
-        f"Waiting {round(wait / 60, 1)} minutes until next movement")
+        f"Wait {round(wait / 60, 1)} minutes until next run")
     sleep(wait)
 
 
@@ -69,11 +69,8 @@ def main():
     while True:
         try:
             if NIGHT_REST[0] <= current_hour() <= NIGHT_REST[1]:
-                if log_count > 0:
-                    MOTOR.logger.info("Call turning mode function")
-                    log_count -= 1
+                MOTOR.logger.info("Start turning mode function")
                 angle_mode(turns=3, sleep_time=3)  # turning mode function
-                # step_mode(sleep_time=3)
                 wait_for_next_turn()
                 log_count = 1
             else:
