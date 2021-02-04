@@ -150,7 +150,7 @@ class SM28BYJ48:
         return self.__logger
 
     def reset(self):
-        self.__logger.debug(f"Step motor reset, GPIO cleanup")
+        self.__logger.debug(f"Stepper motor reset, GPIO cleanup")
         GPIO.cleanup()
 
     def step(self, steps: int = 1):
