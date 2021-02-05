@@ -146,6 +146,15 @@ class SM28BYJ48:
             self.__step_1()
 
     @property
+    def delay(self):
+        return self.__delay
+
+    @delay.setter
+    def delay(self, d: float):
+        self.__logger.debug(f"Motor speed has been set, delay={d}.")
+        self.__delay = d
+
+    @property
     def logger(self):
         return self.__logger
 
