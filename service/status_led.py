@@ -11,7 +11,6 @@ __author__ = "Thomas Kaulke"
 __email__ = "kaulketh@gmail.com"
 
 import os
-import time
 
 import RPi.GPIO as GPIO
 
@@ -23,8 +22,14 @@ GPIO.setup(LEDS[0], GPIO.OUT)
 GPIO.setup(LEDS[1], GPIO.OUT)
 
 
-def red_on():
+def red():
+    off()
     GPIO.output(LEDS[0], GPIO.HIGH)
+
+
+def blue():
+    off()
+    GPIO.output(LEDS[1], GPIO.HIGH)
 
 
 def blink_red():
@@ -37,11 +42,7 @@ def blink_blue():
     os.system('gpio -g blink 21')
 
 
-def blue_on():
-    GPIO.output(LEDS[1], GPIO.HIGH)
-
-
-def leds_off():
+def off():
     for led in LEDS:
         GPIO.output(led, GPIO.LOW)
 
