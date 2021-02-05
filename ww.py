@@ -11,13 +11,13 @@ import random
 from datetime import datetime
 from time import sleep
 
+import service.status_led
 from SM_28BYJ48 import SM28BYJ48
-from service.status_led import red_on, blue_on, leds_off, blink_red
 
 __author__ = "Thomas Kaulke"
 __email__ = "kaulketh@gmail.com"
 
-leds_off()
+service.status_led.off()
 MOTOR = SM28BYJ48(6, 13, 19, 26)  # init motor
 SPEED_RANGE = (0.00075, 0.0015)
 ANGLES = (45, 90, 180, 270, 360)  # define rotation angles
@@ -79,32 +79,29 @@ def random_direction():
 
 def main():
     log_count = 1
-    blue_on()
     while True:
         try:
             if NIGHT_REST[0] >= current_hour() >= NIGHT_REST[1]:
+                service.status_led.blue()
                 MOTOR.logger.info("Start turning mode function")
                 # turning mode function
                 # mode_2()
                 mode_1(turns=3, sleep_time=3)
                 wait_for_next_turn()
                 log_count = 1
-                leds_off()
-                blue_on()
             else:
                 if log_count > 0:
                     MOTOR.logger.info("Night rest! ;-)")
                     log_count -= 1
-                    leds_off()
-                    red_on()
+                service.status_led.red()
                 sleep(60)
         except KeyboardInterrupt:
             MOTOR.logger.warning(f"Interrupted by user input")
-            leds_off()
+            service.status_led.off()
             exit(1)
         except Exception as e:
             MOTOR.logger.error(f"Any error occurs: {e}")
-            blink_red()
+            service.status_led.blink_red()
             exit(1)
 
 

@@ -33,11 +33,13 @@ def blue():
 
 
 def blink_red():
+    off()
     os.system('gpio -g mode 20 out')
     os.system('gpio -g blink 20')
 
 
 def blink_blue():
+    off()
     os.system('gpio -g mode 21 out')
     os.system('gpio -g blink 21')
 
