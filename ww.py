@@ -22,7 +22,7 @@ MOTOR = SM28BYJ48(6, 13, 19, 26)  # init motor
 SPEED_RANGE = (0.00075, 0.0015)
 ANGLES = (45, 90, 180, 270, 360)  # define rotation angles
 WAIT_PERIOD_RANGE = (900, 3601)  # wait randomly min. 15 minutes, max. 1 hour
-NIGHT_REST = (22, 8)  # no run during night period
+NIGHT_REST = (21, 9)  # no run during night period
 
 
 def mode_1(turns=1, sleep_time=1.5):
