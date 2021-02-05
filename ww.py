@@ -22,18 +22,19 @@ MOTOR = SM28BYJ48(6, 13, 19, 26)  # init motor
 SPEED_RANGE = (0.00075, 0.0015)
 ANGLES = (45, 90, 180, 270, 360)  # define rotation angles
 WAIT_PERIOD_RANGE = (900, 3601)  # wait randomly min. 15 minutes, max. 1 hour
-NIGHT_REST = (22, 0)  # no run during night period
+NIGHT_REST = (22, 8)  # no run during night period
 
 
 def mode_1(turns=1, sleep_time=1.5):
     MOTOR.logger.info(
         f"Run 'mode_1', "
         f"rotate {len(ANGLES)} different angles {turns} times.")
+
     while turns > 0:
         turns -= 1
         for _ in range(len(ANGLES)):
             i = random.randint(0, len(ANGLES) - 1)
-            MOTOR.delay = random.uniform(SPEED_RANGE[0], SPEED_RANGE[1])
+            MOTOR.delay = random_speed()
             MOTOR.rotate(ANGLES[i] * random_direction())
             sleep(sleep_time)
 
@@ -42,15 +43,16 @@ def mode_2(sleep_time=1.5):
     turns = random.randint(1, 3)
     ccw_steps = random.randint(1_024, 4_096)
     cw_steps = random.randint(-4_096, -1_024)
+
     MOTOR.logger.info(
         f"Run 'mode_2', "
         f"turn {turns} times {cw_steps} / {ccw_steps} steps.")
 
     for _ in range(turns):
-        MOTOR.delay = random.uniform(SPEED_RANGE[0], SPEED_RANGE[1])
+        MOTOR.delay = random_speed()
         MOTOR.step(cw_steps)
         sleep(sleep_time)
-        MOTOR.delay = random.uniform(SPEED_RANGE[0], SPEED_RANGE[1])
+        MOTOR.delay = random_speed()
         MOTOR.step(ccw_steps)
         sleep(sleep_time)
 
@@ -64,6 +66,10 @@ def wait_for_next_turn(wait_period=WAIT_PERIOD_RANGE):
 
 def current_hour():
     return datetime.now().hour
+
+
+def random_speed():
+    return random.uniform(SPEED_RANGE[0], SPEED_RANGE[1])
 
 
 def random_direction():
@@ -80,7 +86,7 @@ def main():
                 MOTOR.logger.info("Start turning mode function")
                 # turning mode function
                 # mode_2()
-                mode_1(turns=3, sleep_time=4)
+                mode_1(turns=3, sleep_time=3)
                 wait_for_next_turn()
                 log_count = 1
                 leds_off()
