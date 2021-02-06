@@ -17,12 +17,13 @@ from SM_28BYJ48 import SM28BYJ48
 __author__ = "Thomas Kaulke"
 __email__ = "kaulketh@gmail.com"
 
-service.status_led.off()
 MOTOR = SM28BYJ48(6, 13, 19, 26)  # init motor
 SPEED_RANGE = (0.00075, 0.0015)
-ANGLES = (45, 90, 180, 270, 360)  # define rotation angles
-WAIT_PERIOD_RANGE = (900, 3601)  # wait randomly min. 15 minutes, max. 1 hour
-NIGHT_REST = (21, 9)  # no run during night period
+# define rotation angles
+ANGLES = (30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360)
+
+WAIT_PERIOD_RANGE = (300, 901)  # wait randomly min. 5 minutes, max. 15 min
+NIGHT_REST = (23, 8)  # no run during night period
 
 
 def mode_1(turns=1, sleep_time=1.5):
@@ -57,6 +58,20 @@ def mode_2(sleep_time=1.5):
         sleep(sleep_time)
 
 
+def mode_3(turns=1, sleep_time=1.5):
+    MOTOR.logger.info(
+        f"Run 'mode_3', "
+        f"rotate full rounds for- and backwards, {turns} times.")
+
+    while turns > 0:
+        turns -= 1
+        MOTOR.delay = random_speed()
+        MOTOR.rotate(360)
+        MOTOR.delay = random_speed()
+        MOTOR.rotate(-360)
+        sleep(sleep_time)
+
+
 def wait_for_next_turn(wait_period=WAIT_PERIOD_RANGE):
     wait = random.randint(wait_period[0], wait_period[1])
     MOTOR.logger.info(
@@ -77,7 +92,20 @@ def random_direction():
     return d if d != 0 else 1
 
 
+def welcome():
+    MOTOR.logger.info("Start welcome animation")
+    for _ in range(3):
+        service.status_led.red()
+        MOTOR.rotate(-60)
+        service.status_led.blue()
+        MOTOR.rotate(60)
+    service.status_led.off()
+    MOTOR.rotate(-180)
+    MOTOR.rotate(180)
+
+
 def main():
+    welcome()
     log_count = 1
     while True:
         try:
@@ -85,8 +113,9 @@ def main():
                 service.status_led.blue()
                 MOTOR.logger.info("Start turning mode function")
                 # turning mode function
+                mode_3(10)
                 # mode_2()
-                mode_1(turns=3, sleep_time=3)
+                # mode_1(turns=3, sleep_time=2)
                 wait_for_next_turn()
                 log_count = 1
             else:
