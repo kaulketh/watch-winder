@@ -18,21 +18,21 @@ __author__ = "Thomas Kaulke"
 __email__ = "kaulketh@gmail.com"
 
 MOTOR = SM28BYJ48(6, 13, 19, 26)  # init motor
-SPEED_RANGE = (0.00075, 0.0015)
+SPEED_RANGE = (0.0008, 0.0010,)
 # define rotation angles
 ANGLES = (30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360)
 
-WAIT_PERIOD_RANGE = (300, 901)  # wait randomly min. 5 minutes, max. 15 min
-NIGHT_REST = (23, 8)  # no run during night period
+WAIT_PERIOD_RANGE = (5, 15)  # wait random time (minutes)
+NIGHT_REST = (22, 9)  # no run during night period
 
 
-def mode_1(turns=1, sleep_time=1.5):
+def mode_1(turn=1, sleep_time=1.5):
     MOTOR.logger.info(
         f"Run 'mode_1', "
-        f"rotate {len(ANGLES)} different angles {turns} times.")
+        f"rotate {len(ANGLES)} different angles {turn} times.")
 
-    while turns > 0:
-        turns -= 1
+    while turn > 0:
+        turn -= 1
         for _ in range(len(ANGLES)):
             i = random.randint(0, len(ANGLES) - 1)
             MOTOR.delay = random_speed()
@@ -40,8 +40,8 @@ def mode_1(turns=1, sleep_time=1.5):
             sleep(sleep_time)
 
 
-def mode_2(sleep_time=1.5):
-    turns = random.randint(1, 3)
+def mode_2(turn=None, sleep_time=1.5):
+    turns = random.randint(1, 3) if not turn else turn
     ccw_steps = random.randint(1_024, 4_096)
     cw_steps = random.randint(-4_096, -1_024)
 
@@ -58,24 +58,24 @@ def mode_2(sleep_time=1.5):
         sleep(sleep_time)
 
 
-def mode_3(turns=1, sleep_time=1.5):
+def mode_3(turn=1, sleep_time=1.5):
     MOTOR.logger.info(
         f"Run 'mode_3', "
-        f"rotate full rounds for- and backwards, {turns} times.")
+        f"rotate full rounds for- and backwards, {turn} times.")
 
-    while turns > 0:
-        turns -= 1
+    while turn > 0:
+        turn -= 1
         MOTOR.delay = random_speed()
         MOTOR.rotate(360)
+        sleep(sleep_time)
         MOTOR.delay = random_speed()
         MOTOR.rotate(-360)
         sleep(sleep_time)
 
 
-def wait_for_next_turn(wait_period=WAIT_PERIOD_RANGE):
-    wait = random.randint(wait_period[0], wait_period[1])
-    MOTOR.logger.info(
-        f"Wait {round(wait / 60, 1)} minutes until next run")
+def wait_for_next_turn(period_range=WAIT_PERIOD_RANGE):
+    wait = random.randint(period_range[0] * 60, period_range[1] * 60 + 1)
+    MOTOR.logger.info(f"Wait {wait} minutes until next run")
     sleep(wait)
 
 
@@ -84,7 +84,7 @@ def current_hour():
 
 
 def random_speed():
-    return random.uniform(SPEED_RANGE[0], SPEED_RANGE[1])
+    return round(random.uniform(SPEED_RANGE[0], SPEED_RANGE[1]), 4)
 
 
 def random_direction():
@@ -93,15 +93,18 @@ def random_direction():
 
 
 def welcome():
-    MOTOR.logger.info("Start welcome animation")
+    MOTOR.logger.info("Start...")
     for _ in range(3):
         service.status_led.red()
         MOTOR.rotate(-60)
         service.status_led.blue()
         MOTOR.rotate(60)
+    # service.status_led.red()
+    # MOTOR.rotate(-180)
+    # service.status_led.blue()
+    # MOTOR.rotate(180)
+    MOTOR.logger.info("Winder ready")
     service.status_led.off()
-    MOTOR.rotate(-180)
-    MOTOR.rotate(180)
 
 
 def main():
@@ -114,8 +117,8 @@ def main():
                 MOTOR.logger.info("Start turning mode function")
                 # turning mode function
                 mode_3(10)
-                # mode_2()
-                # mode_1(turns=3, sleep_time=2)
+                # mode_2(turn=5)
+                # mode_1(turn=3, sleep_time=2)
                 wait_for_next_turn()
                 log_count = 1
             else:
