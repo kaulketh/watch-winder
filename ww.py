@@ -17,13 +17,15 @@ from SM_28BYJ48 import SM28BYJ48
 __author__ = "Thomas Kaulke"
 __email__ = "kaulketh@gmail.com"
 
-MOTOR = SM28BYJ48(6, 13, 19, 26)  # init motor
-SPEED_RANGE = (0.0008, 0.0010,)
+# init motor
+MOTOR = SM28BYJ48(6, 13, 19, 26)
+SPEED_RANGE = (0.0008, 0.0010)
 # define rotation angles
 ANGLES = (30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360)
-
-WAIT_PERIOD_RANGE = (5, 15)  # wait random time (minutes)
-NIGHT_REST = (22, 9)  # no run during night period
+# wait random time (minutes)
+WAIT_PERIOD_RANGE = (5, 15)
+# no run during night period
+NIGHT_REST = (22, 9)
 
 
 def mode_1(turn=1, sleep_time=1.5):
@@ -75,7 +77,8 @@ def mode_3(turn=1, sleep_time=1.5):
 
 def wait_for_next_turn(period_range=WAIT_PERIOD_RANGE):
     wait = random.randint(period_range[0] * 60, period_range[1] * 60 + 1)
-    MOTOR.logger.info(f"Wait {wait} minutes until next run")
+    MOTOR.logger.debug(f"sleep({wait})")
+    MOTOR.logger.info(f"Wait about {wait // 60} minutes until next run")
     sleep(wait)
 
 
@@ -94,17 +97,14 @@ def random_direction():
 
 def welcome():
     MOTOR.logger.info("Start...")
-    for _ in range(3):
+    for _ in range(4):
         service.status_led.red()
-        MOTOR.rotate(-60)
+        MOTOR.rotate(-90)
         service.status_led.blue()
-        MOTOR.rotate(60)
-    # service.status_led.red()
-    # MOTOR.rotate(-180)
-    # service.status_led.blue()
-    # MOTOR.rotate(180)
+        MOTOR.rotate(90)
     MOTOR.logger.info("Winder ready")
-    service.status_led.off()
+    service.status_led.blue()
+    wait_for_next_turn()
 
 
 def main():
@@ -116,9 +116,9 @@ def main():
                 service.status_led.blue()
                 MOTOR.logger.info("Start turning mode function")
                 # turning mode function
-                mode_3(10)
+                # mode_3(10)
                 # mode_2(turn=5)
-                # mode_1(turn=3, sleep_time=2)
+                mode_1(turn=1, sleep_time=2)
                 wait_for_next_turn()
                 log_count = 1
             else:
