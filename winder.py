@@ -118,7 +118,7 @@ def main():
                 # turning mode function
                 # mode_3(10)
                 # mode_2(turn=5)
-                mode_1(turn=1, sleep_time=2)
+                mode_1(turn=2, sleep_time=3)
                 wait_for_next_turn()
                 log_count = 1
             else:
