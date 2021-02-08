@@ -151,7 +151,7 @@ class SM28BYJ48:
 
     @delay.setter
     def delay(self, d: float):
-        self.__logger.debug(f"Motor speed has been set, delay={d}.")
+        self.__logger.debug(f"Motor speed has been set, delay={d}")
         self.__delay = d
 
     @property
