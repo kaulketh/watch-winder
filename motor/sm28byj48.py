@@ -15,7 +15,7 @@ from time import sleep
 
 import RPi.GPIO as GPIO
 
-from .logger import LOGGER
+from logger import LOGGER
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)

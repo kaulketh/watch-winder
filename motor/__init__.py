@@ -11,4 +11,4 @@
 __author__ = "Thomas Kaulke"
 __email__ = "kaulketh@gmail.com"
 
-from .motor import *
+from .sm28byj48 import *

@@ -11,25 +11,34 @@ import random
 from datetime import datetime
 from time import sleep
 
-import service.status_led
-from SM_28BYJ48 import SM28BYJ48
+import resources.status_led
+from logger import LOGGER
+from motor import SM28BYJ48
+from resources.property import winder_props
 
 __author__ = "Thomas Kaulke"
 __email__ = "kaulketh@gmail.com"
 
-# init motor
-MOTOR = SM28BYJ48(6, 13, 19, 26)
-SPEED_RANGE = (0.0008, 0.0010)
-# define rotation angles
-ANGLES = (30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360)
-# wait random time (minutes)
-WAIT_PERIOD_RANGE = (15, 60)
-# no run during night period
-NIGHT_REST = (22, 9)
+motor = SM28BYJ48(
+    int(winder_props.getProperty("motor.pin.in1")),
+    int(winder_props.getProperty("motor.pin.in2")),
+    int(winder_props.getProperty("motor.pin.in3")),
+    int(winder_props.getProperty("motor.pin.in4")))
+
+SPEED_RANGE = (float(winder_props.getProperty("motor.speed.min")),
+               float(winder_props.getProperty("motor.speed.max")))
+
+ANGLES = tuple(winder_props.getProperty("winder.turn.angles"))
+
+WAIT_PERIOD_RANGE = (int(winder_props.getProperty("winder.wait.min")),
+                     int(winder_props.getProperty("winder.wait.max")))
+
+NIGHT_REST = (winder_props.getProperty("winder.nightrest.begin"),
+              winder_props.getProperty("winder.nightrest.end"))
 
 
 def mode_1(turn=1, sleep_time=1.5):
-    MOTOR.logger.info(
+    LOGGER.info(
         f"Run 'mode_1', "
         f"rotate {len(ANGLES)} different angles {turn} times.")
 
@@ -37,8 +46,8 @@ def mode_1(turn=1, sleep_time=1.5):
         turn -= 1
         for _ in range(len(ANGLES)):
             i = random.randint(0, len(ANGLES) - 1)
-            MOTOR.delay = random_speed()
-            MOTOR.rotate(ANGLES[i] * random_direction())
+            motor.delay = random_speed()
+            motor.rotate(ANGLES[i] * random_direction())
             sleep(sleep_time)
 
 
@@ -47,38 +56,38 @@ def mode_2(turn=None, sleep_time=1.5):
     ccw_steps = random.randint(1_024, 4_096)
     cw_steps = random.randint(-4_096, -1_024)
 
-    MOTOR.logger.info(
+    LOGGER.info(
         f"Run 'mode_2', "
         f"turn {turns} times {cw_steps} / {ccw_steps} steps.")
 
     for _ in range(turns):
-        MOTOR.delay = random_speed()
-        MOTOR.step(cw_steps)
+        motor.delay = random_speed()
+        motor.step(cw_steps)
         sleep(sleep_time)
-        MOTOR.delay = random_speed()
-        MOTOR.step(ccw_steps)
+        motor.delay = random_speed()
+        motor.step(ccw_steps)
         sleep(sleep_time)
 
 
 def mode_3(turn=1, sleep_time=1.5):
-    MOTOR.logger.info(
+    LOGGER.info(
         f"Run 'mode_3', "
         f"rotate full rounds for- and backwards, {turn} times.")
 
     while turn > 0:
         turn -= 1
-        MOTOR.delay = random_speed()
-        MOTOR.rotate(360)
+        motor.delay = random_speed()
+        motor.rotate(360)
         sleep(sleep_time)
-        MOTOR.delay = random_speed()
-        MOTOR.rotate(-360)
+        motor.delay = random_speed()
+        motor.rotate(-360)
         sleep(sleep_time)
 
 
 def wait_for_next_turn(period_range=WAIT_PERIOD_RANGE):
     wait = random.randint(period_range[0] * 60, period_range[1] * 60 + 1)
-    MOTOR.logger.debug(f"sleep({wait})")
-    MOTOR.logger.info(f"Wait about {wait // 60} minutes until next run")
+    LOGGER.debug(f"sleep({wait})")
+    LOGGER.info(f"Wait about {wait // 60} minutes until next run")
     sleep(wait)
 
 
@@ -95,26 +104,35 @@ def random_direction():
     return d if d != 0 else 1
 
 
-def welcome():
-    MOTOR.logger.info("Start...")
-    for _ in range(4):
-        service.status_led.red()
-        MOTOR.rotate(-90)
-        service.status_led.blue()
-        MOTOR.rotate(90)
-    MOTOR.logger.info("Winder ready")
-    service.status_led.blue()
-    wait_for_next_turn()
+def start():
+    try:
+        LOGGER.info("Start...")
+        for _ in range(4):
+            resources.status_led.red()
+            motor.rotate(-90)
+            resources.status_led.blue()
+            motor.rotate(90)
+        LOGGER.info("Winder ready")
+        resources.status_led.blue()
+        wait_for_next_turn()
+    except KeyboardInterrupt:
+        LOGGER.warning(f"Interrupted by user input")
+        resources.status_led.off()
+        exit(1)
+    except Exception as e:
+        LOGGER.error(f"Any error occurs: {e}")
+        resources.status_led.blink_red()
+        exit(1)
 
 
 def main():
-    welcome()
+    start()
     log_count = 1
     while True:
         try:
             if NIGHT_REST[0] >= current_hour() >= NIGHT_REST[1]:
-                service.status_led.blue()
-                MOTOR.logger.info("Start turning mode function")
+                resources.status_led.blue()
+                LOGGER.info("Start turning mode function")
                 # turning mode function
                 # mode_3(10)
                 # mode_2(turn=5)
@@ -123,17 +141,17 @@ def main():
                 log_count = 1
             else:
                 if log_count > 0:
-                    MOTOR.logger.info("Night rest! ;-)")
+                    LOGGER.info("Night rest! ;-)")
                     log_count -= 1
-                service.status_led.red()
+                resources.status_led.red()
                 sleep(60)
         except KeyboardInterrupt:
-            MOTOR.logger.warning(f"Interrupted by user input")
-            service.status_led.off()
+            LOGGER.warning(f"Interrupted by user input")
+            resources.status_led.off()
             exit(1)
         except Exception as e:
-            MOTOR.logger.error(f"Any error occurs: {e}")
-            service.status_led.blink_red()
+            LOGGER.error(f"Any error occurs: {e}")
+            resources.status_led.blink_red()
             exit(1)
 
 
