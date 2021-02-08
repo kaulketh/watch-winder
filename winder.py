@@ -23,7 +23,7 @@ SPEED_RANGE = (0.0008, 0.0010)
 # define rotation angles
 ANGLES = (30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360)
 # wait random time (minutes)
-WAIT_PERIOD_RANGE = (5, 15)
+WAIT_PERIOD_RANGE = (15, 60)
 # no run during night period
 NIGHT_REST = (22, 9)
 
