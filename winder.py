@@ -29,7 +29,7 @@ NIGHT_REST = (int(winder_props.getProperty("winder.nightrest.begin")),
 
 def wait(period_range=WAIT_PERIOD_RANGE):
     w = random.randint(period_range[0] * 60, period_range[1] * 60)
-    LOGGER.debug(
+    LOGGER.info(
         f"Wait {w} seconds until next try ({round(w / 60, 1)} minutes)")
     sleep(w)
 
