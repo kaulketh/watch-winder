@@ -70,9 +70,9 @@ def main():
                 resources.status_led.blue()
                 LOGGER.info("Start turning mode function")
                 # turning mode function
-                # resources.mode.mode_3(motor, turn=10)
+                # resources.mode.mode_3(motor, 10, 0.5)
                 # resources.mode.mode_2(motor, turn=5)
-                resources.mode.mode_1(motor, turn=2, sleep_time=3)
+                resources.mode.mode_1(motor, 10, 0.5)
                 log_count = 1
             else:
                 resources.status_led.red()

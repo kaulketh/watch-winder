@@ -19,8 +19,8 @@ from resources.property import winder_props
 # fixed angle of rotation
 ANGLES = (30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360)
 
-SPEED_RANGE = (float(winder_props.getProperty("motor.step.delay.min")),
-               float(winder_props.getProperty("motor.step.delay.max")))
+STEP_DELAY_RANGE = (float(winder_props.getProperty("motor.step.delay.min")),
+                    float(winder_props.getProperty("motor.step.delay.max")))
 
 
 def __random_direction():
@@ -28,8 +28,8 @@ def __random_direction():
     return d if d != 0 else 1
 
 
-def __random_speed():
-    return round(random.uniform(SPEED_RANGE[0], SPEED_RANGE[1]), 4)
+def __random_step_delay():
+    return round(random.uniform(STEP_DELAY_RANGE[0], STEP_DELAY_RANGE[1]), 4)
 
 
 def mode_1(motor, turn=1, sleep_time=1.5):
@@ -41,7 +41,7 @@ def mode_1(motor, turn=1, sleep_time=1.5):
         turn -= 1
         for _ in range(len(ANGLES)):
             i = random.randint(0, len(ANGLES) - 1)
-            motor.delay = __random_speed()
+            motor.delay = __random_step_delay()
             motor.rotate(ANGLES[i] * __random_direction())
             sleep(sleep_time)
 
@@ -56,10 +56,10 @@ def mode_2(motor, turn=None, sleep_time=1.5):
         f"turn {turns} times {cw_steps} / {ccw_steps} steps.")
 
     for _ in range(turns):
-        motor.delay = __random_speed()
+        motor.delay = __random_step_delay()
         motor.step(cw_steps)
         sleep(sleep_time)
-        motor.delay = __random_speed()
+        motor.delay = __random_step_delay()
         motor.step(ccw_steps)
         sleep(sleep_time)
 
@@ -71,10 +71,10 @@ def mode_3(motor, turn=1, sleep_time=1.5):
 
     while turn > 0:
         turn -= 1
-        motor.delay = __random_speed()
+        motor.delay = __random_step_delay()
         motor.rotate(360)
         sleep(sleep_time)
-        motor.delay = __random_speed()
+        motor.delay = __random_step_delay()
         motor.rotate(-360)
         sleep(sleep_time)
 
