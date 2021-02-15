@@ -32,7 +32,7 @@ class Properties(pyjavaproperties3.Properties):
         return value
 
 
-winder_props = Properties("/winder.properties")
+winder_properties = Properties("/winder.properties")
 
 if __name__ == '__main__':
     pass

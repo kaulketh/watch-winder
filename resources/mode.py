@@ -14,13 +14,14 @@ import random
 from time import sleep
 
 from logger import LOGGER
-from resources.property import winder_props
+from resources.config import winder_properties
 
 # fixed angle of rotation
 ANGLES = (30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360)
 
-STEP_DELAY_RANGE = (float(winder_props.getProperty("motor.step.delay.min")),
-                    float(winder_props.getProperty("motor.step.delay.max")))
+STEP_DELAY_RANGE = (
+    float(winder_properties.getProperty("motor.step.delay.min")),
+    float(winder_properties.getProperty("motor.step.delay.max")))
 
 
 def __random_direction():
@@ -64,13 +65,13 @@ def mode_2(motor, turn=None, sleep_time=1.5):
         sleep(sleep_time)
 
 
-def mode_3(motor, turn=1, sleep_time=1.5):
+def mode_3(motor, rotations=1, sleep_time=1.5):
     LOGGER.info(
         f"Run 'mode_3', "
-        f"rotate full rounds for- and backwards, {turn} times.")
+        f"rotate full rounds for- and backwards, {rotations} times.")
 
-    while turn > 0:
-        turn -= 1
+    while rotations > 0:
+        rotations -= 1
         motor.delay = __random_step_delay()
         motor.rotate(360)
         sleep(sleep_time)

@@ -15,16 +15,16 @@ import resources.mode
 import resources.status_led
 from logger import LOGGER
 from motor import SM28BYJ48
-from resources.property import winder_props
+from resources.config import winder_properties
 
 __author__ = "Thomas Kaulke"
 __email__ = "kaulketh@gmail.com"
 
-WAIT_PERIOD_RANGE = (int(winder_props.getProperty("winder.wait.min")),
-                     int(winder_props.getProperty("winder.wait.max")))
+WAIT_PERIOD_RANGE = (int(winder_properties.getProperty("winder.wait.min")),
+                     int(winder_properties.getProperty("winder.wait.max")))
 
-NIGHT_REST = (int(winder_props.getProperty("winder.nightrest.begin")),
-              int(winder_props.getProperty("winder.nightrest.end")))
+NIGHT_REST = (int(winder_properties.getProperty("winder.nightrest.begin")),
+              int(winder_properties.getProperty("winder.nightrest.end")))
 
 
 def wait(period_range=WAIT_PERIOD_RANGE):
@@ -38,10 +38,10 @@ def init():
     try:
         LOGGER.info("Initializing...")
         motor = SM28BYJ48(
-            int(winder_props.getProperty("motor.pin.in1")),
-            int(winder_props.getProperty("motor.pin.in2")),
-            int(winder_props.getProperty("motor.pin.in3")),
-            int(winder_props.getProperty("motor.pin.in4")))
+            int(winder_properties.getProperty("motor.pin.in1")),
+            int(winder_properties.getProperty("motor.pin.in2")),
+            int(winder_properties.getProperty("motor.pin.in3")),
+            int(winder_properties.getProperty("motor.pin.in4")))
 
         for _ in range(4):
             resources.status_led.red()
@@ -70,9 +70,9 @@ def main():
                 resources.status_led.blue()
                 LOGGER.info("Start turning mode function")
                 # turning mode function
-                # resources.mode.mode_3(motor, 10, 0.5)
+                resources.mode.mode_3(motor, rotations=100)
                 # resources.mode.mode_2(motor, turn=5)
-                resources.mode.mode_1(motor, 10, 0.5)
+                # resources.mode.mode_1(motor, 10, 0.5)
                 log_count = 1
             else:
                 resources.status_led.red()
