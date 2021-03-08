@@ -14,7 +14,7 @@ from time import sleep
 from logger import LOGGER
 from mode import Mode
 from motor import SM28BYJ48
-from resources.config import winder_properties
+from config import winder_properties
 from status.led import StatusLed
 
 __author__ = "Thomas Kaulke"

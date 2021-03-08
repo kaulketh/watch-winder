@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 # -----------------------------------------------------------
-# created 08.02.2021
+# __init__.py
+# created 08.03.2021
 # Thomas Kaulke, kaulketh@gmail.com
 # https://github.com/kaulketh
 # -----------------------------------------------------------
@@ -23,9 +24,9 @@ class Properties(pyjavaproperties3.Properties):
     def __init__(self, file):
         super().__init__()
         self.__logger = LOGGER
-        self.path = f"{self.THIS_FOLDER}{file}"
-        self.__logger.debug(f"Load properties from {self.path}")
-        self.load(open(self.path))
+        self.__prop_path = os.path.join(self.THIS_FOLDER, file)
+        self.__logger.debug(f"Load properties from {self.__prop_path}")
+        self.load(open(self.__prop_path))
 
     def getProperty(self, key):
         value = self._props.get(key, '')
@@ -33,7 +34,4 @@ class Properties(pyjavaproperties3.Properties):
         return value
 
 
-winder_properties = Properties("/winder.properties")
-
-if __name__ == '__main__':
-    pass
+winder_properties = Properties("../resources/winder.properties")
