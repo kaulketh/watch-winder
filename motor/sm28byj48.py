@@ -169,7 +169,7 @@ class SM28BYJ48:
 
     def rotate(self, degrees):
         self.__logger.debug(f"Rotate {degrees} degrees.")
-        self.step(int(degrees / 5.625 / 64 * 512))
+        self.step(int(degrees / self.__sa * self.__spr))
 
 
 if __name__ == '__main__':
