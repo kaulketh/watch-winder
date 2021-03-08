@@ -22,13 +22,14 @@ class Properties(pyjavaproperties3.Properties):
 
     def __init__(self, file):
         super().__init__()
+        self.__logger = LOGGER
         self.path = f"{self.THIS_FOLDER}{file}"
-        LOGGER.debug(f"Load properties from {self.path}")
+        self.__logger.debug(f"Load properties from {self.path}")
         self.load(open(self.path))
 
     def getProperty(self, key):
         value = self._props.get(key, '')
-        LOGGER.debug(f"Get property '{key}={value}'")
+        self.__logger.debug(f"Get property '{key}={value}'")
         return value
 
 
