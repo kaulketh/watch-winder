@@ -11,11 +11,11 @@ import random
 from datetime import datetime
 from time import sleep
 
+from config import winder_properties
 from logger import LOGGER
 from mode import Mode
 from motor import SM28BYJ48
-from config import winder_properties
-from status.led import StatusLed
+from status_led import StatusLed
 
 __author__ = "Thomas Kaulke"
 __email__ = "kaulketh@gmail.com"
