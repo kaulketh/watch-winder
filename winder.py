@@ -29,13 +29,6 @@ NIGHT_REST = (int(winder_properties.getProperty("winder.nightrest.begin")),
 LED = StatusLed(pin_red=20, pin_blue=21)
 
 
-def wait(period_range=WAIT_PERIOD_RANGE):
-    w = random.randint(period_range[0] * 60, period_range[1] * 60)
-    LOGGER.info(
-        f"Wait {w} seconds until next try ({round(w / 60, 1)} minutes)")
-    sleep(w)
-
-
 def init():
     try:
         LOGGER.info("Initializing...")
@@ -71,12 +64,8 @@ def main():
                 LED.blue()
                 LOGGER.info("Start turning mode function")
                 # turning mode function
-
-                # resources.mode.mode_3(motor, rotations=100)
                 m.mode_3(rotations=100)
-                # resources.mode.mode_2(motor, turn=5)
                 # m.mode_2(turn=5)
-                # resources.mode.mode_1(motor, 10, 0.5)
                 # m.mode_1(turn=10, sleep_time=0.5)
                 log_count = 1
             else:
@@ -84,7 +73,11 @@ def main():
                 if log_count > 0:
                     LOGGER.info("Night rest, sleeping...")
                     log_count -= 1
-            wait()
+            w = random.randint(WAIT_PERIOD_RANGE[0] * 60,
+                               WAIT_PERIOD_RANGE[1] * 60)
+            LOGGER.info(
+                f"Wait {w} seconds until next try ({round(w / 60, 1)} minutes)")
+            sleep(w)
         except KeyboardInterrupt:
             LOGGER.warning(f"Interrupted by user input")
             LED.off()
