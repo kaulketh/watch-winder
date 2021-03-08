@@ -45,7 +45,8 @@ class SM28BYJ48:
         self.__in2 = in2
         self.__in3 = in3
         self.__in4 = in4
-        self.__sa = 5.625 / 64  # step angle
+        self.__angle = 5.625
+        self.__sa = 64  # step angle step
         self.__spr = 512  # steps per one revolution
         self.__repr_str = f"{self.__class__.__name__}: " \
                           f"IN1={self.__in1}, " \
@@ -169,7 +170,7 @@ class SM28BYJ48:
 
     def rotate(self, degrees):
         self.__logger.debug(f"Rotate {degrees} degrees.")
-        self.step(int(degrees / self.__sa * self.__spr))
+        self.step(int(degrees / self.__angle / self.__sa * self.__spr))
 
 
 if __name__ == '__main__':
