@@ -16,7 +16,7 @@ import RPi.GPIO as GPIO
 from logger import LOGGER
 
 
-class StatusLed():
+class StatusLed:
 
     def __init__(self, pin_red: int, pin_blue: int):
         self.__pins = (pin_red, pin_blue)  # RED, BLUE
