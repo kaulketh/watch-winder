@@ -11,8 +11,8 @@ import random
 from datetime import datetime
 from time import sleep
 
-import resources.mode
 from logger import LOGGER
+from mode import Mode
 from motor import SM28BYJ48
 from resources.config import winder_properties
 from status.led import StatusLed
@@ -26,7 +26,7 @@ WAIT_PERIOD_RANGE = (int(winder_properties.getProperty("winder.wait.min")),
 NIGHT_REST = (int(winder_properties.getProperty("winder.nightrest.begin")),
               int(winder_properties.getProperty("winder.nightrest.end")))
 
-LED = StatusLed(20, 21)
+LED = StatusLed(pin_red=20, pin_blue=21)
 
 
 def wait(period_range=WAIT_PERIOD_RANGE):
@@ -44,7 +44,6 @@ def init():
             int(winder_properties.getProperty("motor.pin.in2")),
             int(winder_properties.getProperty("motor.pin.in3")),
             int(winder_properties.getProperty("motor.pin.in4")))
-
         for _ in range(4):
             LED.red()
             motor.rotate(-90)
@@ -64,7 +63,7 @@ def init():
 
 
 def main():
-    motor = init()
+    m = Mode(init())
     log_count = 1
     while True:
         try:
@@ -72,9 +71,13 @@ def main():
                 LED.blue()
                 LOGGER.info("Start turning mode function")
                 # turning mode function
-                resources.mode.mode_3(motor, rotations=100)
+
+                # resources.mode.mode_3(motor, rotations=100)
+                m.mode_3(rotations=100)
                 # resources.mode.mode_2(motor, turn=5)
+                # m.mode_2(turn=5)
                 # resources.mode.mode_1(motor, 10, 0.5)
+                # m.mode_1(turn=10, sleep_time=0.5)
                 log_count = 1
             else:
                 LED.red()
