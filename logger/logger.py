@@ -51,12 +51,12 @@ handler_error.setLevel(logging.ERROR)
 # create formatters and add to handlers
 format_info = \
     logging.Formatter('%(asctime)s  %(levelname)s '
-                      '[ %(module)s.%(funcName)s  linenr.%(lineno)s ] '
+                      '[ %(pathname)s) %(funcName)s  linenr.%(lineno)s ] '
                       '%(message).180s', datefmt='%Y-%m-%d %H:%M:%S')
 format_error = \
     logging.Formatter(
         '%(asctime)s  %(levelname)s '
-        '[ %(module)s.%(funcName)s  linenr.%(lineno)s ] '
+        '[ %(pathname)s) %(funcName)s  linenr.%(lineno)s ] '
         '[ thread: %(threadName)s ] %(message)s')
 handler_info.setFormatter(format_info)
 handler_error.setFormatter(format_error)
