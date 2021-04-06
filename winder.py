@@ -15,7 +15,7 @@ from config import winder_properties
 from logger import LOGGER
 from mode import Mode
 from motor import SM28BYJ48
-from status_led import StatusLed
+from status_led import TwoColorStatusLed
 
 __author__ = "Thomas Kaulke"
 __email__ = "kaulketh@gmail.com"
@@ -26,7 +26,7 @@ WAIT_PERIOD_RANGE = (int(winder_properties.getProperty("winder.wait.min")),
 NIGHT_REST = (int(winder_properties.getProperty("winder.nightrest.begin")),
               int(winder_properties.getProperty("winder.nightrest.end")))
 
-LED = StatusLed(pin_red=20, pin_blue=21)
+LED = TwoColorStatusLed(pin_red=20, pin_blue=21)
 
 
 def init():
