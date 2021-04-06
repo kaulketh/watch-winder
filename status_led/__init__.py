@@ -8,8 +8,9 @@
 # https://github.com/kaulketh
 # -----------------------------------------------------------
 
-import RPi.GPIO as GPIO
 import os
+
+import RPi.GPIO as GPIO
 
 from logger import LOGGER
 
@@ -25,12 +26,12 @@ class StatusLed:
 
     def on(self):
         self.off()
-        self.__logger.debug("Enable light")
+        self.__logger.debug("Enable led")
         GPIO.output(self.__pin, GPIO.HIGH)
 
     def blink(self):
         self.off()
-        self.__logger.debug("Enable blinking red light")
+        self.__logger.debug("Enable blinking led")
         os.system('gpio -g mode %s out' % str(self.__pin))
         os.system('gpio -g blink %s' % str(self.__pin))
 
