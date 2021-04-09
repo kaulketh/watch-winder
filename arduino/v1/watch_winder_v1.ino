@@ -2,6 +2,14 @@
 // Driver ULN2003, motor reduced to 1:64
 //**************************************************************
 
+// JLed breathe demo.
+// Copyright 2017 by Jan Delgado. All rights reserved.
+// https://github.com/jandelgado/jled
+#include <jled.h>
+
+// breathe LED for 5 times, LED is connected to pin 9 (PWM capable) gpio
+auto led = JLed(5).Breathe(2000).Repeat(5).DelayAfter(2000);
+
 #include <Stepper.h>
 // LED
 #define LED 5
@@ -20,8 +28,8 @@
 #define M4 11
 
 // loop values
-#define LOOP 20
-#define WAIT 120
+#define TURN 30 // turns counter
+#define WAIT 210 // wait counter, from TURN to WAIT, 1 wait loop => 10 seconds, e.g. WAIT 210 (TURN 30) -> 210-30=180, 180x10 sec=1800 sec => 30 minutes
 #define DELAY 1000
 #define MOTOR_STEPS 4096
 
@@ -41,38 +49,32 @@ int counter;
 
 void setup() {
   Serial.begin(9600); // open the serial port at 9600 bps:
-  Serial.println("Init stepper program");
+  Serial.println("Initialize...");
   pinMode(LED, OUTPUT); // Set LED pin
+  fadeDownAndUp(500, 20); // start "animation"
 }
 
 void loop() {
-  digitalWrite(LED, HIGH);
   delay(100);
-  if (counter > 0) {
-    Serial.println(String(counter) + String(".loop done"));
-  }
-  else if (counter > LOOP){
-    Serial.println(String(counter) + String(".loop w/o turns"));
-  }
-
   motor.setSpeed(SPEED);
 
-  if (counter < LOOP) { // LOOP*2 turns (each 2 clockwise and 2 counter clockwise)
-      Serial.println("<---- counter clockwise");
-      turn(-1 * MOTOR_STEPS);
-      delay(DELAY);
-      Serial.println("----> clockwise");
-      turn(MOTOR_STEPS);
-      delay(DELAY);
-      oneSecondBlink();
-      counter++;
-    }
-  else if (counter < WAIT) { // 1200 seconds (20 minutes) standby
-    Serial.println("Waiting...");
-    for (int x = 0; x < 10; x++) {
-      oneSecondBlink();
-    }
+  if (counter < TURN) { // Turn loops: TURN turns, each 2 clockwise and 2 counter clockwise
+    Serial.println("<---- counter clockwise");
+    turn(-1 * MOTOR_STEPS);
+    delay(DELAY);
+    Serial.println("----> clockwise");
+    turn(MOTOR_STEPS);
+    delay(DELAY);
+    //oneSecondBlink();
+    fadeDownAndUp(DELAY, 1);
     counter++;
+    Serial.println(String(counter) + String("/") + String(TURN) + String(" loops done."));
+  }
+  else if (counter < WAIT) { // Standy loops: (WAIT - TURN) x 10 seconds
+    Serial.println("Waiting...");
+    fadeDownAndUp(DELAY, 10);
+    counter++;
+    Serial.println(String(counter) + String(".loop w/o turns"));
   }
   else {
     counter = 0;
@@ -80,7 +82,7 @@ void loop() {
 }
 
 String turnTimeString(int timeValue) {
-  return (String("duration: ") + String(timeValue / 1000.000, 3) + String(" sec"));
+  return (String("Turn duration: ") + String(timeValue / 1000.000, 3) + String(" sec"));
 }
 
 void turn(int steps) {
@@ -95,7 +97,26 @@ void turn(int steps) {
 
 void oneSecondBlink() {
   digitalWrite(LED, LOW);
+  Serial.println("OFF");
   delay(800);
   digitalWrite(LED, HIGH);
+  Serial.println("ON");
   delay(200);
+}
+
+void fadeDownAndUp(int maxDelay, int count) {
+  //float t = millis();
+  int maxBright = 255;
+  while (count > 0) {
+    for (int b = maxBright ; b >= 0; b--) {
+      analogWrite(LED, b);
+      delay(maxDelay / maxBright / 2);
+    }
+    for (int b = 1; b <= maxBright; b++) {
+      analogWrite(LED, b);
+      delay(maxDelay / maxBright);
+    }
+    count--;
+  }
+  //Serial.println(String("Fade duration: ") + String((millis() - t) / 1000.000, 3) + String(" sec"));
 }
