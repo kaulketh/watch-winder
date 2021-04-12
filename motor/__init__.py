@@ -8,9 +8,6 @@
 # -----------------------------------------------------------
 
 
-__author__ = "Thomas Kaulke"
-__email__ = "kaulketh@gmail.com"
-
 from time import sleep
 
 import RPi.GPIO as GPIO

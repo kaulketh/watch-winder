@@ -7,8 +7,6 @@
 # https://github.com/kaulketh
 # -----------------------------------------------------------
 
-__author__ = "Thomas Kaulke"
-__email__ = "kaulketh@gmail.com"
 
 import errno
 import logging

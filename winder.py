@@ -17,8 +17,6 @@ from mode import Mode
 from motor import SM28BYJ48
 from status_led import TwoColorStatusLed
 
-__author__ = "Thomas Kaulke"
-__email__ = "kaulketh@gmail.com"
 
 WAIT_PERIOD_RANGE = (int(winder_properties.getProperty("winder.wait.min")),
                      int(winder_properties.getProperty("winder.wait.max")))
